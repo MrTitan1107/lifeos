@@ -1,0 +1,10 @@
+# Entornos Virtuales
+venv/
+env/
+
+# Bytecode de Python (archivos compilados que se generan solos)
+__pycache__/
+*.pyc
+
+# Archivos de sistema operativo molestos
+.DS_Store
