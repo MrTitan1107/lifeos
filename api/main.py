@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from typing import List
-from domain.models import Food
+from domain.models import Food, Ingredient
 from infrastructure.repositories import CSVRepository
 from services.food_services import FoodService
 
@@ -51,3 +51,10 @@ def delete_food(food_name:str):
         raise HTTPException(status_code=404, detail= f"Alimento \"{food_name}\" no encontrado")
     service.delete_food(food_name)
     return {"message": f"Alimento \"{food_name}\" eliminado correctamente"}
+
+@app.post("/meals/calculate")
+def calculate_meal(ingredients: List[Ingredient]):
+    """
+    Calcula el total de macronutrientes de una comida dada una lista de ingredientes.
+    """
+    return service.calculate_meal(ingredients)

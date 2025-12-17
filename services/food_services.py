@@ -1,5 +1,5 @@
 from typing import List, Optional
-from domain.models import Food
+from domain.models import Food, Ingredient
 from infrastructure.repositories import CSVRepository
 
 class FoodService:
@@ -33,3 +33,28 @@ class FoodService:
     
     def delete_food(self, name:str) -> None:
         return self.repository.delete(name)
+    
+    def calculate_meal(self, ingredients: List[Ingredient]) -> dict:
+        total_prot = 0
+        total_carb = 0
+        total_fats = 0
+
+        missing = []
+
+        for item in ingredients:
+            food = self.get_food_by_name(item.name)
+            if not food:
+                missing.append(item.name)
+                continue
+
+            ratio = item.weigtht_g/100
+
+            total_prot += food.protein_per_100g * ratio
+            total_fats  += food.fats_per_100g * ratio
+            total_carb += food.carbs_per_100g * ratio
+        return{
+            "total_protein": total_prot,
+            "total_carbs": total_carb,
+            "total_fats": total_fats,
+            "missing_foods": missing
+        }

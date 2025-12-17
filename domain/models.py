@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-
+from pydantic import BaseModel
 @dataclass
 class Food:
     CALS_PER_GRAM_CARBS = 4
@@ -23,6 +23,10 @@ class Food:
         if grams < 0:
              raise ValueError("Weight in grams must be non-negative.")
         return (grams / 100) * self.calories_per_100g
+    
+class Ingredient(BaseModel):
+     name:str
+     weigtht_g: float
     
     
 
