@@ -43,35 +43,48 @@ class CSVRepository:
             return False
         foods = self.get_all()
 
-        updated_foods = [f for f in foods if f.name() != food.name]
+        updated_foods = [f for f in foods if f.name != food.name]
 
         updated_foods.append(food)
 
-        with open(self.file_path, "w") as f:
+        with open(self.file_path, "w", newline='', encoding='utf-8') as f:
 
             writer = csv.DictWriter(f, fieldnames=self.fieldnames)
             writer.writeheader()
             for f_item in updated_foods:
                 writer.writerow(
                     {
-                        "name": food.name,
-                        "protein_per_100g": food.protein_per_100g,
-                        "carbs_per_100g": food.carbs_per_100g,
-                        "fats_per_100g": food.fats_per_100g
+                        "name": f_item.name,
+                        "protein_per_100g": f_item.protein_per_100g,
+                        "carbs_per_100g": f_item.carbs_per_100g,
+                        "fats_per_100g": f_item.fats_per_100g
                     }
                 )
 
-
-
-
-
-
-
-
     def find_by_name(self, name: str) -> Optional[Food]:
         """Busca uno específico. Devuelve None si no existe."""
-        pass
-        
+        foods = self.get_all()
+        for food in foods:
+            if food.name.lower() == name.lower():
+                return food
+        return None
+            
     def delete(self, name: str) -> None:
         """Elimina el alimento del archivo."""
-        pass
+        foods = self.get_all()
+        updated_foods = [f for f in foods if f.name != name]
+        try:
+            with open(self.file_path, "w", newline='', encoding='utf-8') as f:
+                writer = csv.DictWriter(f, fieldnames=self.fieldnames)
+                writer.writeheader()
+                for f_item in updated_foods:
+                    writer.writerow(
+                        {
+                            "name": f_item.name,
+                            "protein_per_100g": f_item.protein_per_100g,
+                            "carbs_per_100g": f_item.carbs_per_100g,
+                            "fats_per_100g": f_item.fats_per_100g
+                        }
+                    )
+        except Exception as e:
+            print(f"Could not delete food {name}: {e}")

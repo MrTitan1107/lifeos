@@ -6,7 +6,7 @@ from infrastructure.repositories import CSVRepository
 # Fixture: Esto se ejecuta ANTES de cada test para preparar el terreno
 @pytest.fixture
 def repo():
-    test_file = "test_foods.csv"
+    test_file = "foods.csv"
     # Setup
     if os.path.exists(test_file):
         os.remove(test_file)
