@@ -21,4 +21,9 @@
     
     He aprendido la importancia de usar la codificación UTF-8 al leer archivos para evitar problemas con caracteres raros como tildes o eñes.
 
+    He aprendido que cuando quieres realizar una petición a una API en la que quieres obtener información a partir de una información enviade usar el metodo GET no siempre es lo mejor. GET mete toda la iformación que se envía en la url. Si queremos mandar un json complejo es inviable. Por eso para esos casos es mejor usar POST aunque no vayamos a cambiar nada y solo queramos una respues de la API, ya que la petición viaja en formato JSON. Esto nos permite enviar mucha más información que con GET.
+
+   He aprendido la importancia de la validación de tipos (types) con pydantic o dataclases. 
+        -Dataclases es nativo de python y se encarga de hacer más facil lo codificación de clases que se van a usar con el objetivo de almacenar información. Nor permite escribir una clase sin necesidad de escribir un __init__ y selfs por todas partes. Es util para usar dentro de python ya que es rápido y nativo. Pero tiene un problema: la validación de tipos. Si queremos validar tipos en una dataclass tenemos que hacerlo manualmente con lo que eso conlleva (mucho código y tiempo). Por eso no es recomendable usarlo para cuando va a haber interacción con el mundo exterior.
+        -Pydantic: no es una librería nativa y tiene una funcionalidad parecida a dataclass con la ventaja de que al crear una clase a partir de una instacia de la clase de base de Pydantic (BaseModel) podemos trabajar igual que con dataclasses pero con validación de tipos automática ( solo hace falta declarar la variable y el tipo: name: str, y la librería se encarga de lanzar un error si el tipo no coincide ).
     

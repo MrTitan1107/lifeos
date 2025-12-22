@@ -1,6 +1,6 @@
 from typing import List, Optional
 from domain.models import Food, Ingredient
-from infrastructure.repositories import CSVRepository
+from infrastructure.sql_repository import SQLFoodRepository
 
 class FoodService:
     """
@@ -8,14 +8,14 @@ class FoodService:
     It acts as an intermediary between the application logic and the data repository.
 
     Attributes:
-        repository (CSVRepository): An instance of CSVRepository used to interact 
+        repository (SQLFoodRepository): An instance of SQLFoodRepository used to interact 
         with the underlying data storage for food-related data.
 
     Args:
-        repository (CSVRepository): The data repository instance that provides 
+        repository (SQLFoodRepository): The data repository instance that provides 
         methods for accessing and manipulating food data.
     """
-    def __init__(self,repository: CSVRepository):
+    def __init__(self,repository: SQLFoodRepository):
         self.repository = repository
 
     def get_all(self) -> List[Food]:

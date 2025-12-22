@@ -1,60 +1,71 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Depends
+from sqlalchemy.orm import Session
 from typing import List
+
+# Importamos tus piezas de LEGO
 from domain.models import Food, Ingredient
-from infrastructure.repositories import CSVRepository
-from services.food_services import FoodService
+from services.food_service import FoodService
+from infrastructure.database import SessionLocal, engine, Base
+from infrastructure.entities import FoodEntity
+from infrastructure.sql_repository import SQLFoodRepository
+
+# 1. CREAR LAS TABLAS (Si no existen)
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="LifeOS")
 
-repo = CSVRepository(file_path="data/foods.csv")
+# --- ZONA DE DEPENDENCIAS (La Fábrica de Objetos) ---
 
-service = FoodService(repository=repo)
+# Esta función se encarga de abrir y cerrar la conexión a la base de datos
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close() # ¡Muy importante! Cierra el grifo al terminar.
 
+# Esta función fabrica el SERVICIO listo para usar
+# Pide la base de datos (db) -> Crea el Repo -> Crea el Service
+def get_service(db: Session = Depends(get_db)) -> FoodService:
+    repository = SQLFoodRepository(db)
+    return FoodService(repository)
+
+# --- ENDPOINTS ---
 
 @app.get("/foods", response_model=List[Food])
-def get_foods():
-    try:
-        return service.get_all()
-    except ValueError as e:
-        raise HTTPException(status_code=400, detail=str(e))
-    
-
+# Fíjate: Ya no usamos la variable global 'service'.
+# Ahora pedimos "service: FoodService = Depends(get_service)"
+def get_all_foods(service: FoodService = Depends(get_service)):
+    return service.get_all()
 
 @app.post("/foods")
-def create_food(food: Food):
-    """
-    Recibe un JSON, lo convierte a objeto Food, valida los tipos
-    y lo guarda en el CSV.
-    """
+def create_food(food: Food, service: FoodService = Depends(get_service)):
     try:
         service.create_food(food)
         return {"message": "Alimento creado correctamente", "data": food}
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
 
-
 @app.get("/foods/{name}", response_model=Food)
-def get_food_by_name(name: str):
+def get_food_by_name(name: str, service: FoodService = Depends(get_service)):
     food = service.get_food_by_name(name)
     if not food:
         raise HTTPException(status_code=404, detail="Alimento no encontrado")
     return food
 
-
-
 @app.delete("/foods/{food_name}")
-def delete_food(food_name:str):
-    """
-    Elimina un alimento a partir de su nombre.
-    """
+def delete_food(food_name: str, service: FoodService = Depends(get_service)):
     if not service.get_food_by_name(food_name):
-        raise HTTPException(status_code=404, detail= f"Alimento \"{food_name}\" no encontrado")
+        raise HTTPException(status_code=404, detail=f"Alimento {food_name} no encontrado")
+    
     service.delete_food(food_name)
-    return {"message": f"Alimento \"{food_name}\" eliminado correctamente"}
+    # service.delete_food(food_name) <--- Descomenta si lo tienes implementado
+    return {"message": f"Alimento {food_name} eliminado correctamente"} 
 
-@app.post("/meals/calculate")
-def calculate_meal(ingredients: List[Ingredient]):
+@app.post("/meal/calculate")
+def calculate_meal_macros(ingredients: List[Ingredient], service: FoodService = Depends(get_service)):
     """
-    Calcula el total de macronutrientes de una comida dada una lista de ingredientes.
+    Calculadora nutricional.
     """
-    return service.calculate_meal(ingredients)
+    results = service.calculate_meal(ingredients)
+    return results
