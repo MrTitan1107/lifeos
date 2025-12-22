@@ -26,4 +26,12 @@
    He aprendido la importancia de la validación de tipos (types) con pydantic o dataclases. 
         -Dataclases es nativo de python y se encarga de hacer más facil lo codificación de clases que se van a usar con el objetivo de almacenar información. Nor permite escribir una clase sin necesidad de escribir un __init__ y selfs por todas partes. Es util para usar dentro de python ya que es rápido y nativo. Pero tiene un problema: la validación de tipos. Si queremos validar tipos en una dataclass tenemos que hacerlo manualmente con lo que eso conlleva (mucho código y tiempo). Por eso no es recomendable usarlo para cuando va a haber interacción con el mundo exterior.
         -Pydantic: no es una librería nativa y tiene una funcionalidad parecida a dataclass con la ventaja de que al crear una clase a partir de una instacia de la clase de base de Pydantic (BaseModel) podemos trabajar igual que con dataclasses pero con validación de tipos automática ( solo hace falta declarar la variable y el tipo: name: str, y la librería se encarga de lanzar un error si el tipo no coincide ).
+
+22/12/2025
+    Hoy he aprendido que para poder crear una base de datos escalable y profesional es esencial usar SQL. Pero como python y SQL no se pueden comunicar directamente usamos SQLLite para crear una base de datos local alojada den un arichov de mi ordenador y sqlalchemy para traducir código python en consultas sql de manera automática y poder comunicarme con la base de datos con python.
+
+    Otra cosa que he aprendido es la importancia de usar la inyección y separación de dependencias y como FastAPI nos ayuda con ello. Cuando trabajmos con una base de datos SQL no podemos usar una sola sesión para todos los usurios o las peticiones de la API por que puede haber interferencias entre las consultas de los distintos usuarios. Por eso tenemos que crear una sesión temporal por cada nueva petición de la API y eliminarla una vez ejcutada la petición.
+
+    También he aprendido que una de las ventajas de usar una base de datos en SQL es que la propia base de datos se encarga de manera automática de crear una ID única para cada nuevo objeto "food" que introduzco en ella. Esto es mmuy util ya que aumenta la eficiencia de la búsqueda de una alimento en concreto entre todos al hacerlo a partir de los IDs de los objetos dentro de la base de datos que eestán ordenados lo que hace que la búsqueda sea mucho más rápida.
+    
     
