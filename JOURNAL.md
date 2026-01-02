@@ -33,5 +33,10 @@
     Otra cosa que he aprendido es la importancia de usar la inyección y separación de dependencias y como FastAPI nos ayuda con ello. Cuando trabajmos con una base de datos SQL no podemos usar una sola sesión para todos los usurios o las peticiones de la API por que puede haber interferencias entre las consultas de los distintos usuarios. Por eso tenemos que crear una sesión temporal por cada nueva petición de la API y eliminarla una vez ejcutada la petición.
 
     También he aprendido que una de las ventajas de usar una base de datos en SQL es que la propia base de datos se encarga de manera automática de crear una ID única para cada nuevo objeto "food" que introduzco en ella. Esto es mmuy util ya que aumenta la eficiencia de la búsqueda de una alimento en concreto entre todos al hacerlo a partir de los IDs de los objetos dentro de la base de datos que eestán ordenados lo que hace que la búsqueda sea mucho más rápida.
-    
+2/1/2026
+    Hoy he aprendido a usar la libraría requests muy por encima para comunicarme y hacer peticiones a apis. En concreto a una api creada por mi.
+
+    También he aprendido a usar una librería para hacer frontends de datos usando python (streamlit). La verdad es que es bastante intuitica y simple, mucho más que pyside. Imagino que tendrá sus limitaciones. Pero aun así me gusta bastante como se ve, es moderno y minimalista. 
+
+    Hoy se a centrado en crear una interfaz (frontend) muy básica para interactuar con la api y la base de datos. He aprendido como se comunican y la importante se separa la lógica de cada una de las partes, la interfaz, la lógica de negocio y la base de datos.
     
