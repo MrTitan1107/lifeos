@@ -47,7 +47,7 @@ class FoodService:
                 missing.append(item.name)
                 continue
 
-            ratio = item.weigtht_g/100
+            ratio = item.weight_g/100
 
             total_prot += food.protein_per_100g * ratio
             total_fats  += food.fats_per_100g * ratio
