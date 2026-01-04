@@ -1,8 +1,10 @@
 import streamlit as st
 import requests
+import matplotlib.pyplot as plt
+import os
 
 # 1. Configuración: ¿Dónde vive el cerebro?
-API_URL = "http://127.0.0.1:8000"
+API_URL = os.getenv("API_URL","http://127.0.0.1:8000")
 
 st.title("🍎 LifeOS Infinity - Panel de Control")
 
@@ -77,10 +79,61 @@ with tab2:
                     result = res.json()
                     st.success(f"Cálculo realizado con éxito")
 
+                    st.divider()
+                    st.subheader("📊 Distribución Calórica")
+
+                    # 1. Datos y Colores
+                    labels = ['Proteínas', 'Carbos', 'Grasas']
+                    sizes = [result['total_protein'], result['total_carbs'], result['total_fats']]
+                    colors = ['#ff7675', '#0984e3', '#00b894'] # Rojo suave, Azul, Verde
+
+                    # 2. Lienzo
+                    fig, ax = plt.subplots()
+                    fig.patch.set_alpha(0) # Fondo transparente
+                    ax.patch.set_alpha(0)
+
+                    # 3. Dibujar el DONUT (Sin etiquetas externas)
+                    wedges, texts, autotexts = ax.pie(
+                        sizes, 
+                        # labels=labels, <--- BORRAMOS ESTO (Para no ensuciar el gráfico)
+                        colors=colors, 
+                        autopct='%1.0f%%', 
+                        startangle=90,
+                        pctdistance=0.85, # Porcentajes más pegados al borde
+                        wedgeprops={'width': 0.4, 'edgecolor': '#0e1117', 'linewidth': 2},
+                        textprops={'color': "white"}
+                    )
+
+                    # 4. Estilizar los números de dentro (Porcentajes)
+                    for autotext in autotexts:
+                        autotext.set_color('white')
+                        autotext.set_weight('bold')
+                        autotext.set_fontsize(12)
+
+                    # 5. CREAR LA LEYENDA (La clave del minimalismo)
+                    # frameon=False: Quita el recuadro feo de la leyenda
+                    # loc='lower center': La pone abajo centrada
+                    # ncol=3: La pone en horizontal (3 columnas) en vez de vertical
+                    leg = ax.legend(wedges, labels,
+                              title="Macronutrientes",
+                              loc="center",
+                              bbox_to_anchor=(0.5, -0.1), # La empujamos un poco hacia abajo
+                              ncol=3, 
+                              frameon=False,
+                              labelcolor="white" # Texto blanco para modo oscuro
+                              )
+
+                    # Hack para que el título de la leyenda también sea blanco
+                    plt.setp(leg.get_title(), color='white')
+
+                    ax.axis('equal')  
+                    st.pyplot(fig)
+
+
                     col1,col2,col3 = st.columns(3)
-                    col1.metric("Proteínas",f"{result["total_protein"]} g")
-                    col2.metric("Carbohidratos",f"{result["total_carbs"]} g")
-                    col3.metric("Grasas",f"{result["total_fats"]} g")
+                    col1.metric("Proteínas",f"{result["total_protein"]:.2f} g")
+                    col2.metric("Carbohidratos",f"{result["total_carbs"]:.2f} g")
+                    col3.metric("Grasas",f"{result["total_fats"]:.2f} g")
                 else:st.error(f"Error al calcular")
             except Exception as e:
                 st.error(f"Error de técnico: {e}")
