@@ -1,21 +1,29 @@
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker
+import os # <--- Importante para leer variables de entorno
 
-# 1. Definimos el nombre del archivo de la base de datos
-# "sqlite:///" indica que usaremos SQLite (base de datos en un archivo)
-DATABASE_URL = "sqlite:///./lifeos.db"
+# 1. Buscamos la dirección de la BD en las variables de entorno
+# Si no existe (estamos en local), usamos SQLite por defecto.
+DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./lifeos.db")
 
-# 2. Creamos el "Motor" (Engine)
-# check_same_thread=False es necesario solo para SQLite en FastAPI
-engine = create_engine(
-    DATABASE_URL, connect_args={"check_same_thread": False}
-)
+# 2. CORRECCIÓN IMPORTANTE PARA RENDER
+# Render nos da la URL empezando por "postgres://", pero SQLAlchemy
+# necesita que empiece por "postgresql://". Hacemos el cambio manual:
+if DATABASE_URL and DATABASE_URL.startswith("postgres://"):
+    DATABASE_URL = DATABASE_URL.replace("postgres://", "postgresql://", 1)
 
-# 3. Creamos la "Fábrica de Sesiones" (SessionLocal)
-# Cada vez que alguien pida algo a la API, usaremos esto para abrir una sesión
+# 3. Configuración del motor según el tipo de BD
+if "sqlite" in DATABASE_URL:
+    # Configuración para SQLite (lo que tenías antes)
+    engine = create_engine(
+        DATABASE_URL, connect_args={"check_same_thread": False}
+    )
+else:
+    # Configuración para PostgreSQL (La Nube)
+    # PostgreSQL es más robusto y no necesita check_same_thread
+    engine = create_engine(DATABASE_URL)
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-# 4. Creamos la "Clase Base"
-# Todos nuestros modelos de datos heredarán de aquí para que SQLAlchemy sepa que son tablas
 Base = declarative_base()
-

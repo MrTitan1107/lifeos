@@ -39,4 +39,11 @@
     También he aprendido a usar una librería para hacer frontends de datos usando python (streamlit). La verdad es que es bastante intuitica y simple, mucho más que pyside. Imagino que tendrá sus limitaciones. Pero aun así me gusta bastante como se ve, es moderno y minimalista. 
 
     Hoy se a centrado en crear una interfaz (frontend) muy básica para interactuar con la api y la base de datos. He aprendido como se comunican y la importante se separa la lógica de cada una de las partes, la interfaz, la lógica de negocio y la base de datos.
-    
+4/1/2026
+    He aprendido a crear un documento de requerimientos de manera automática.
+
+    He aprendido a alojar mi aplicación en la nube.
+        Por un lado el frontend en la web oficial de streamlit de manera gratuita
+        Por otro lado el backend en render también de manera gratuita
+
+    También he apredido a subir mi proyecto a github y a partir de el instalar mi aplicación en los servidores antes mencionados para que mi aplicación se convierta en una aplicación web real.
